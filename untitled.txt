@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toxic Plant Classifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Toxic Plant Identification</h1>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*">
+        <input type="submit" value="Upload and Classify">
+    </form>
+</body>
+</html>
