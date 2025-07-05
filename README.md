@@ -93,7 +93,13 @@ AI-Powered-Toxic-Plant-Identification/
 ### Web Interface
 - Built using Flask and HTML/CSS.
 - Users can upload plant images, which are passed to the trained model for classification.
+## 📷 Demo
 
+Upload an image of a plant and get a prediction on whether it's toxic.
+
+| Upload Page | Result Page |
+|-------------|-------------|
+| ![Home Page](static/screens/index.png) | ![Result Page](static/screens/result.png) |
 ---
 
 ## Technologies Used
