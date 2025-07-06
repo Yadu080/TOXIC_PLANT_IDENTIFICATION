@@ -97,10 +97,9 @@ AI-Powered-Toxic-Plant-Identification/
 
 Upload an image of a plant and get a prediction on whether it's toxic.
 
-| Upload Page | Result Page |
-|-------------|-------------|
-| ![Home Page](static/screens/index.png) | ![Result Page](static/screens/result.png) |
----
+| ![Home Page](static/screens/index.png) | 
+![Result Page](static/screens/result.png) |
+
 
 ## Technologies Used
 
