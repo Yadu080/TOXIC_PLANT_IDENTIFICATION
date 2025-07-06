@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Classification Result</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 219, 226, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 183, 197, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.2) 0%, transparent 50%);
+            animation: backgroundFloat 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 48px 40px;
+            text-align: center;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #2e7d32, #4caf50, #66bb6a);
+            border-radius: 24px 24px 0 0;
+        }
+
+        h1 {
+            color: #1b5e20;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .image-container {
+            position: relative;
+            margin-bottom: 32px;
+            display: inline-block;
+        }
+
+        .image-container::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg, #2e7d32, #4caf50, #66bb6a, #81c784);
+            border-radius: 16px;
+            z-index: -1;
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        img {
+            max-width: 320px;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        img:hover {
+            transform: scale(1.05);
+        }
+
+        .result-section {
+            margin: 32px 0;
+            position: relative;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            animation: tagAppear 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes tagAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .tag::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .tag:hover::before {
+            left: 100%;
+        }
+
+        .toxic {
+            background: linear-gradient(135deg, #d32f2f, #f44336);
+            animation: toxicPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes toxicPulse {
+            0%, 100% { box-shadow: 0 8px 25px rgba(211, 47, 47, 0.3); }
+            50% { box-shadow: 0 12px 35px rgba(211, 47, 47, 0.5); }
+        }
+
+        .safe {
+            background: linear-gradient(135deg, #388e3c, #4caf50);
+            animation: safePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes safePulse {
+            0%, 100% { box-shadow: 0 8px 25px rgba(56, 142, 60, 0.3); }
+            50% { box-shadow: 0 12px 35px rgba(56, 142, 60, 0.5); }
+        }
+
+        .confidence-container {
+            margin: 24px 0;
+            padding: 20px;
+            background: rgba(46, 125, 50, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(46, 125, 50, 0.1);
+        }
+
+        .confidence-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .confidence-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2e7d32;
+            margin-bottom: 12px;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(46, 125, 50, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2e7d32, #4caf50);
+            border-radius: 4px;
+            transition: width 1s ease-out;
+            position: relative;
+        }
+
+        .confidence-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 32px;
+            text-decoration: none;
+            color: #1565c0;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: 2px solid #1565c0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #1565c0;
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .back-link:hover::before {
+            left: 0;
+        }
+
+        .back-link:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(21, 101, 192, 0.3);
+        }
+
+        .back-icon {
+            margin-right: 8px;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover .back-icon {
+            transform: translateX(-3px);
+        }
+
+        .status-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            animation: statusIcon 1s ease-out 0.5s both;
+        }
+
+        @keyframes statusIcon {
+            from {
+                opacity: 0;
+                transform: scale(0) rotate(180deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 32px 24px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            img {
+                max-width: 280px;
+            }
+            
+            .tag {
+                font-size: 16px;
+                padding: 12px 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 24px 16px;
+            }
+            
+            img {
+                max-width: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+      <div class="card">
+          <h1>Classification Result</h1>
+
+          <div class="image-container">
+              <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="image"/>
+          </div>
+
+          <div class="result-section">
+              {% if classification == 'Toxic' %}
+                  <div class="status-icon">⚠️</div>
+                  <div class="tag toxic">Toxic Plant</div>
+              {% else %}
+                  <div class="status-icon">✅</div>
+                  <div class="tag safe">Non‑Toxic Plant</div>
+              {% endif %}
+
+              {% if confidence is defined %}
+                  <div class="confidence-container">
+                      <div class="confidence-label">Confidence Level</div>
+                      <div class="confidence-value">{{ '%.1f'|format(confidence*100) }}%</div>
+                      <div class="confidence-bar">
+                          <div class="confidence-fill" style="width: {{ confidence*100 }}%"></div>
+                      </div>
+                  </div>
+              {% endif %}
+          </div>
+
+          <a href="{{ url_for('home') }}" class="back-link">
+              <span class="back-icon">←</span>
+              <span>Analyze Another Plant</span>
+          </a>
+      </div>
+  </div>
+</body>
+</html>
