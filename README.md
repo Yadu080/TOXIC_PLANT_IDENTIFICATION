@@ -141,6 +141,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - TensorFlow and Keras for machine learning tools.
 - Flask for the web framework.
 - OpenCV for image processing.
+- Images for training from kaggle : https://www.kaggle.com/datasets/hanselliott/toxic-plant-classification?resource=download
 
 ---
 
